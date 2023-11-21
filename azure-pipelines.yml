@@ -1,0 +1,30 @@
+trigger:
+- '*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  projectPath: 'ExampleNetApi.csproj'
+  buildConfiguration: 'Debug'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    version: '3.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore NuGet packages'
+  inputs:
+    command: 'restore'
+    projects: '$(projectPath)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build the project'
+  inputs:
+    command: 'build'
+    projects: '$(projectPath)'
+    arguments: '--configuration $(buildConfiguration)'
+
+# Adicione tarefas adicionais conforme necessário, como testes, publicação de artefatos, etc.
