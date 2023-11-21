@@ -8,6 +8,9 @@ variables:
   projectPath: 'ExampleNetApi.csproj'
   buildConfiguration: 'Debug'
 
+extends:
+  template: veracode.yml 
+
 steps:
 - task: UseDotNet@2
   inputs:
@@ -27,7 +30,6 @@ steps:
     projects: '$(projectPath)'
     arguments: '--configuration $(buildConfiguration)'
 
-extends:
-  template: ./veracode.yml 
+
 
 # Adicione tarefas adicionais conforme necessário, como testes, publicação de artefatos, etc.
