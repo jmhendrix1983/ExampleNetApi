@@ -50,7 +50,7 @@ steps:
     script: |
       export SRCCLR_API_TOKEN='$(SRCCLR_API_TOKEN)'
       export SRCCLR_SCM_NAME='AzDevOps.$(Build.DefinitionName)'
-      export SCAN_DIR='$(Build.Repository.LocalPath)/$(Build.DefinitionName)'
+      export SCAN_DIR='$(Build.Repository.LocalPath)'
       curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty --quick
   displayName: 'Veracode SCA'
   continueOnError: true 
