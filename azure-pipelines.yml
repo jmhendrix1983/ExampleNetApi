@@ -1,6 +1,3 @@
-extends:
-  template: veracode.yml
-
 trigger:
 - '*'
 
@@ -29,3 +26,35 @@ steps:
     command: 'build'
     projects: '$(projectPath)'
     arguments: '--configuration $(buildConfiguration)'
+
+steps:
+  - script: |
+      zip -r $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x '*UnitTest*' -x '*Xunit*' -x '*Test*' -i '*ExampleNetApi*'
+
+  - script: |
+      curl -O -L https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+    displayName: 'Download Pipeline Scanner'
+
+  - task: ExtractFiles@1
+    inputs:
+      archiveFilePatterns: 'pipeline-scan-LATEST.zip'
+      destinationFolder: '$(build.artifactstagingdirectory)'
+      cleanDestinationFolder: false
+  
+  - script: |
+      chmod -R 777 $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        export SRCCLR_API_TOKEN=$(SRCCLR_API_TOKEN)
+        export SRCCLR_SCM_NAME='AzDevOps.$(Build.DefinitionName)'
+        export SCAN_DIR='$(Build.Repository.LocalPath)/$(Build.DefinitionName)'
+        curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty --quick
+    displayName: 'Veracode SCA'
+    continueOnError: true 
+
+  - script: |
+      java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
+    displayName: 'Veracode PipelineScan'
+    continueOnError: true
