@@ -1,0 +1,45 @@
+steps:
+  - script: |
+      zip -r $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x '*UnitTest*' -x '*Xunit*' -x '*Test*' -i '*ExampleNetApi*'
+
+  - script: |
+      curl -O -L https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+    displayName: 'Download Pipeline Scanner'
+
+  - task: ExtractFiles@1
+    inputs:
+      archiveFilePatterns: 'pipeline-scan-LATEST.zip'
+      destinationFolder: '$(build.artifactstagingdirectory)'
+      cleanDestinationFolder: false
+  
+  - script: |
+      chmod -R 777 $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        export SRCCLR_API_TOKEN=$(SRCCLR_API_TOKEN)
+        export SRCCLR_SCM_NAME='AzDevOps.$(Build.DefinitionName)'
+        export SCAN_DIR='$(Build.Repository.LocalPath)/$(Build.DefinitionName)'
+        curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty --quick
+    displayName: 'Veracode SCA'
+    continueOnError: true 
+
+  - script: |
+      java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
+    displayName: 'Veracode PipelineScan'
+    continueOnError: true
+
+  # - task: Veracode@3
+  #   inputs: 
+  #     ConnectionDetailsSelection: 'Service Connection' # access Veracode with service connection or Veracode API credentials
+  #     AnalysisService: 'VERACODE-POC' # service connection name for accessing Veracode
+  #     veracodeAppProfile: '$(Build.DefinitionName)' # Veracode application profile to scan
+  #     version: '$(build.buildNumber)' # name of the scan to run
+  #     filepath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' # filepath or folderpath of files to upload to Veracode
+  #     optargs: '-sandboxname mysandbox -deleteIncompleteScan 1' # scan criticality is high, include DLL modules, exclude EXE modules, create sandbox mysandbox during scan, delete a scan with status of incomplete, no modules defined, failed, or cancelled 
+  #     createSandBox: true # true to scan of new development sandbox
+  #     createProfile: false # false to enforce using existing profiles
+  #     failBuildIfUploadAndScanBuildStepFails: false # true to fail build if Upload and Scan task fails to start
+  #     importResults: false # required to view Veracode results in Azure DevOps
+  #     failBuildOnPolicyFail: false # true to fail the build if application fails policy
