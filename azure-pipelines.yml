@@ -1,3 +1,6 @@
+extends:
+  template: veracode.yml
+
 trigger:
 - '*'
 
@@ -26,7 +29,3 @@ steps:
     command: 'build'
     projects: '$(projectPath)'
     arguments: '--configuration $(buildConfiguration)'
-
-
-extends:
-  template: veracode.yml
