@@ -28,7 +28,7 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 # Steps Veracode
 - script: |
-    zip $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x ref -x '*UnitTest*' -x '*Xunit*' -x '*Test*' -i '*ExampleNetApi*'
+    zip -r $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x ref -x '*UnitTest*' -x '*Xunit*' -x '*Test*' -i '*ExampleNetApi*'
   displayName: 'ZIP Artefatos'
 
 - script: |
