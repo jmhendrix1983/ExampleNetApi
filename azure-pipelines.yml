@@ -29,6 +29,7 @@ steps:
 # Steps Veracode
 - script: |
     zip -r $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x ref -x '*UnitTest*' -x '*Xunit*' -x '*Test*' -i '*ExampleNetApi*'
+  displayName: 'ZIP Artefatos'
 
 - script: |
     curl -O -L https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
@@ -42,11 +43,11 @@ steps:
 
 - script: |
     chmod -R 777 $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+  displayName: 'Permissão artefato'
 
 - task: CmdLine@2
   inputs:
     script: |
-#      export SRCCLR_API_TOKEN=$(SRCCLR_API_TOKEN)
       export SRCCLR_SCM_NAME='AzDevOps.$(Build.DefinitionName)'
       export SCAN_DIR='$(Build.Repository.LocalPath)/$(Build.DefinitionName)'
       curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty --quick
