@@ -45,17 +45,16 @@ steps:
     chmod -R 777 $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
   displayName: 'Permissão artefato'
 
-- task: CmdLine@2
-  inputs:
-    script: |
+- parallel:
+    - script: |
       export SRCCLR_API_TOKEN='$(SRCCLR_API_TOKEN)'
       export SRCCLR_SCM_NAME='AzDevOps.$(Build.DefinitionName)'
       export SCAN_DIR='$(Build.Repository.LocalPath)'
       curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty --quick
-  displayName: 'Veracode SCA'
-  continueOnError: true 
+    displayName: 'Veracode SCA'
+    continueOnError: true 
 
-- script: |
-    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
-  displayName: 'Veracode PipelineScan'
-  continueOnError: true
+    - script: |
+        java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
+      displayName: 'Veracode PipelineScan'
+      continueOnError: true
