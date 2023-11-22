@@ -29,15 +29,15 @@ steps:
 # Steps Veracode
 
 - script: |
-    branchname=$(git rev-parse --abbrev-ref HEAD)
-    mainbranch=$(git rev-parse --abbrev-ref refs/heads/main)
-    echo $(git rev-parse --abbrev-ref HEAD)
-    echo $(git rev-parse --abbrev-ref refs/heads/main)
-    if [[ "$branchname" == "$mainbranch" ]]; then
-      echo "Executando Police Scan por ser a Main Branch"
-    else
-      echo "Executando Sandbox Scan por ser diferente da Main Branch"
-    fi
+    branchname=$(Build.SourceBranchName)
+    mainbranch=$(MainBranchName)
+    echo $branchname
+    echo $mainbranch
+    # if [[ "$branchname" == "$mainbranch" ]]; then
+    #   echo "Executando Police Scan por ser a Main Branch"
+    # else
+    #   echo "Executando Sandbox Scan por ser diferente da Main Branch"
+    # fi
   displayName: 'Variaveis Veracode'
 
 - script: |
