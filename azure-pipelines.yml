@@ -87,6 +87,6 @@ steps:
     optargs: '$(veracodeSandBoxName) -include *.* -deleteIncompleteScan 1' # scan criticality is high, include DLL modules, exclude EXE modules, create sandbox mysandbox during scan, delete a scan with status of incomplete, no modules defined, failed, or cancelled 
     createSandBox: $(veracodeCreateSandBox) # true to scan of new development sandbox
     createProfile: true # false to enforce using existing profiles
-    failBuildIfUploadAndScanBuildStepFails: false # true to fail build if Upload and Scan task fails to start
-    importResults: false # required to view Veracode results in Azure DevOps
-    failBuildOnPolicyFail: false # true to fail the build if application fails policy
+    # failBuildIfUploadAndScanBuildStepFails: false # true to fail build if Upload and Scan task fails to start
+    # importResults: false # required to view Veracode results in Azure DevOps
+    # failBuildOnPolicyFail: false # true to fail the build if application fails policy
