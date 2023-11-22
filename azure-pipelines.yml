@@ -7,6 +7,8 @@ pool:
 variables:
   projectPath: 'ExampleNetApi.csproj'
   buildConfiguration: 'Debug'
+  veracodeCreateSandBox: 'false'
+  veracodeSandBoxName: ''
 
 steps:
 - task: UseDotNet@2
@@ -31,13 +33,14 @@ steps:
 - script: |
     branchname=$(Build.SourceBranchName)
     mainbranch=$(MainBranchName)
-    echo $branchname
-    echo $mainbranch
-    # if [[ "$branchname" == "$mainbranch" ]]; then
-    #   echo "Executando Police Scan por ser a Main Branch"
-    # else
-    #   echo "Executando Sandbox Scan por ser diferente da Main Branch"
-    # fi
+
+    if [[ "$branchname" == "$mainbranch" ]]; then
+      echo "Executando Police Scan por ser a Main Branch"
+    else
+      echo "Executando Sandbox Scan por ser diferente da Main Branch"
+      $(veracodeCreateSandBox)='true'
+      $(veracodeSandBoxName)='-sandboxname $branchname'
+    fi
   displayName: 'Variaveis Veracode'
 
 - script: |
@@ -73,17 +76,17 @@ steps:
 #   displayName: 'Veracode PipelineScan'
 #   continueOnError: true
 
-# - task: Veracode@3
-#   inputs: 
-#     ConnectionDetailsSelection: 'Credentials'
-#     apiId: '$(APIID)'
-#     apiKey: '$(APIKEY)'
-#     veracodeAppProfile: '$(Build.DefinitionName)' # Veracode application profile to scan
-#     version: '$(build.buildNumber)' # name of the scan to run
-#     filepath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' # filepath or folderpath of files to upload to Veracode
-#     optargs: '-sandboxname mysandbox -deleteIncompleteScan 1' # scan criticality is high, include DLL modules, exclude EXE modules, create sandbox mysandbox during scan, delete a scan with status of incomplete, no modules defined, failed, or cancelled 
-#     createSandBox: true # true to scan of new development sandbox
-#     createProfile: false # false to enforce using existing profiles
-#     failBuildIfUploadAndScanBuildStepFails: false # true to fail build if Upload and Scan task fails to start
-#     importResults: false # required to view Veracode results in Azure DevOps
-#     failBuildOnPolicyFail: false # true to fail the build if application fails policy
+- task: Veracode@3
+  inputs: 
+    ConnectionDetailsSelection: 'Credentials'
+    apiId: '$(APIID)'
+    apiKey: '$(APIKEY)'
+    veracodeAppProfile: '$(Build.DefinitionName)' # Veracode application profile to scan
+    version: '$(build.buildNumber)' # name of the scan to run
+    filepath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' # filepath or folderpath of files to upload to Veracode
+    optargs: '$(veracodeSandBoxName) -include *.* -deleteIncompleteScan 1' # scan criticality is high, include DLL modules, exclude EXE modules, create sandbox mysandbox during scan, delete a scan with status of incomplete, no modules defined, failed, or cancelled 
+    createSandBox: $(veracodeCreateSandBox) # true to scan of new development sandbox
+    createProfile: true # false to enforce using existing profiles
+    failBuildIfUploadAndScanBuildStepFails: false # true to fail build if Upload and Scan task fails to start
+    importResults: false # required to view Veracode results in Azure DevOps
+    failBuildOnPolicyFail: false # true to fail the build if application fails policy
