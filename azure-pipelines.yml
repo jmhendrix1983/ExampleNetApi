@@ -28,13 +28,12 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 # Steps Veracode
 
-- script:
-    script: |
-      if [[ $(Build.SourceBranch) == $(Build.SourceBranchName) ]]; then
-        echo "Executando Police Scan por ser a Main Branch"
-      else
-        echo "Executando Sandbox Scan por ser diferente da Main Branch"
-      fi
+- script: |
+    if [[ $(Build.SourceBranch) == $(Build.SourceBranchName) ]]; then
+      echo "Executando Police Scan por ser a Main Branch"
+    else
+      echo "Executando Sandbox Scan por ser diferente da Main Branch"
+    fi
   displayName: 'Variaveis Veracode'
 
 - script: |
