@@ -28,6 +28,7 @@ steps:
     command: 'build'
     projects: '$(projectPath)'
     arguments: '--configuration $(buildConfiguration)'
+
 # Steps Veracode
 
 - script: |
@@ -72,28 +73,18 @@ steps:
   continueOnError: true 
 
 - script: |
+    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --request_policy 'Veracode Recommended Very High + SCA'
+  displayName: 'Veracode obtendo police'
+  continueOnError: true
+
+- script: |
     java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
   displayName: 'Veracode PipelineScan'
   continueOnError: true
-
-# - task: Veracode@3
-#   inputs: 
-#     ConnectionDetailsSelection: 'Credentials'
-#     apiId: '$(APIID)'
-#     apiKey: '$(APIKEY)'
-#     veracodeAppProfile: '$(Build.DefinitionName)' # Veracode application profile to scan
-#     version: '$(build.buildNumber)' # name of the scan to run
-#     filepath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' # filepath or folderpath of files to upload to Veracode
-#     optargs: '$(veracodeSandBoxName) -include *.*' # scan criticality is high, include DLL modules, exclude EXE modules, create sandbox mysandbox during scan, delete a scan with status of incomplete, no modules defined, failed, or cancelled 
-#     createSandBox: $(veracodeCreateSandBox) # true to scan of new development sandbox
-#     createProfile: true # false to enforce using existing profiles
-#     failBuildIfUploadAndScanBuildStepFails: false # true to fail build if Upload and Scan task fails to start
-#     importResults: false # required to view Veracode results in Azure DevOps
-#     failBuildOnPolicyFail: false # true to fail the build if application fails policy
 
 - script: |
     curl -o veracode-wrapper.jar https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/23.4.11.2/vosp-api-wrappers-java-23.4.11.2.jar
   displayName: 'Download Veracode Wrapper'
 - script: |
     java -jar veracode-wrapper.jar -vid $(APIID) -vkey $(APIKEY) -action uploadandscan -appname $(Build.DefinitionName) -createprofile true  -version $(build.buildNumber) -filepath $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-  displayName: 'Veracode U&S'
+  displayName: 'Veracode Upload and Scan'
