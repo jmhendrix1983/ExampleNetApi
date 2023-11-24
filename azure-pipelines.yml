@@ -73,7 +73,7 @@ steps:
 #   continueOnError: true 
 
 - script: |
-    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --request_policy '$(veracodePolice)'
+    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --request_policy '$(veracodePolice)' --policy_file "policeVeracode.json"
   displayName: 'Veracode obtendo police'
   continueOnError: true
 
