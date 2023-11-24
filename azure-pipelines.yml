@@ -45,7 +45,8 @@ steps:
   displayName: 'Variaveis Veracode'
 
 - script: |
-    zip -r $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x ref -x '*UnitTest*' -x '*Xunit*' -x '*Test*' -i '*Debug/*/*ExampleNetApi*'
+    zip -r $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x \*/ref/\* -x \*/\*UnitTest\* -x \*/\*Xunit\* -x \*/\*Test\* -i \*/Debug/\*
+#    zip -r $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip $(Agent.BuildDirectory) -x ref -x '*UnitTest*' -x '*Xunit*' -x '*Test*' -i '*Debug/*/*ExampleNetApi*'
   displayName: 'ZIP Artefatos'
 
 - script: |
