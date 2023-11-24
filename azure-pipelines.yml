@@ -79,8 +79,8 @@ steps:
 
 - script: |
 #     --policy_file '${$(veracodePolice).json// /_}'
-    x = $(veracodePolice)
-    eecho "${x// /*}"
+    veracodePoliceWithoutSpaces=$(echo $(veracodePolice) | tr ' ' '_')
+    echo "Substituído: $veracodePoliceWithoutSpaces.json"
 #    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY)  --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
   displayName: 'Veracode PipelineScan'
   continueOnError: true
