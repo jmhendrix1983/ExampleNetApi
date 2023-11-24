@@ -73,7 +73,7 @@ steps:
   continueOnError: true 
 
 - script: |
-    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --request_policy 'Police Localiza'
+    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --request_policy 'Veracode Recommended Very High + SCA - POV'
   displayName: 'Veracode obtendo police'
   continueOnError: true
 
