@@ -79,8 +79,7 @@ steps:
 
 - script: |
     veracodePolice="$(veracodePolice)"
-    echo "Substituído (espaços removidos): ${veracodePolice// /_}"
-#    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY)  --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
+    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --policy_file ${veracodePolice// /_}.json --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
   displayName: 'Veracode PipelineScan'
   continueOnError: true
 
