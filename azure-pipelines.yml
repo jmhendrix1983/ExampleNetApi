@@ -79,7 +79,7 @@ steps:
 
 - script: |
 #     --policy_file '${$(veracodePolice).json// /_}'
-    x="$(veracodePolice).json"
+    x="$(veracodePolice)"
     echo "Original: $x"
     echo "Substituído (espaços removidos): $[replace(variables['$x'], ' ', '_')]"
 #    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY)  --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
