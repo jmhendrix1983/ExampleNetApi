@@ -79,10 +79,10 @@ steps:
 
 - script: |
 #     --policy_file '${$(veracodePolice).json// /_}'
-    x="    This    is      a      test   "
-    echo "${x// /}"
-    ### replace all spaces with * ####
-    echo "${x// /*}"
+    x="$(veracodePolice)"
+    echo "Original: $x"
+    echo "Substituído (espaços removidos): ${x// /}"
+    echo "Substituído (espaços por '*'): ${x// /\\*}"
 #    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY)  --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
   displayName: 'Veracode PipelineScan'
   continueOnError: true
