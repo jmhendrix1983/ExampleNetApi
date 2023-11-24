@@ -73,14 +73,15 @@ steps:
 #   continueOnError: true 
 
 - script: |
-    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --request_policy '$(veracodePolice)' --policy_file "policeVeracode.json"
+    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --request_policy '$(veracodePolice)'
   displayName: 'Veracode obtendo police'
   continueOnError: true
 
 - script: |
-    veracodePoliceWithoutSpaces="${"$(veracodePolice)"// /_}"
+    veracodePolice="$(veracodePolice)"
+    veracodePoliceWithoutSpaces="${veracodePolice// /_}"
+    echo "Original: $veracodePolice"
     echo "Substituído (espaços removidos): $veracodePoliceWithoutSpaces"
-#    echo "Substituído (espaços removidos): ${replace("$(veracodePolice)", " ", "_")}"
 #    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY)  --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
   displayName: 'Veracode PipelineScan'
   continueOnError: true
