@@ -78,8 +78,10 @@ steps:
   continueOnError: true
 
 - script: |
-    echo "Original: $(veracodePolice)"
-    echo "Substituído (espaços removidos): ${veracodePolice// /_}"
+    veracodePolice="    This    is      a      test   "
+    veracodePoliceWithoutSpaces="${veracodePolice// /_}"
+    echo "Original: $veracodePolice"
+    echo "Substituído (espaços removidos): $veracodePoliceWithoutSpaces"
 #    echo "Substituído (espaços removidos): ${replace("$(veracodePolice)", " ", "_")}"
 #    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY)  --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true 
   displayName: 'Veracode PipelineScan'
