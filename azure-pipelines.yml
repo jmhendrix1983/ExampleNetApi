@@ -79,7 +79,7 @@ steps:
 
 - script: |
     veracodePolice="$(veracodePolice)"
-    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --policy_file ${veracodePolice// /_}.json --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true --json_display true
+    java -jar $(build.artifactstagingdirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --policy_file ${veracodePolice// /_}.json --file $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip --issue_details true --json_display true --project_name jmhendrix1983.ExampleNetApi2
   displayName: 'Veracode PipelineScan'
 
 - script: |
